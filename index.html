@@ -167,11 +167,11 @@
 
 
 			$usernameForm.submit(function(e){
-			    //e.preventDefault();
+			    e.preventDefault();
 				console.log("...username form....");
-				socket.emit('nuser',  $username.val(), $password.val(), function(data, data2){
+				socket.emit('login',  $username.val(), $password.val(), function(data){
 					console.log('debug2');
-					if(data =='login'){
+					if(data =='ok'){
 						$('#namesWrapper').hide();
 						$('#mainWrapper').show();
 					}else{
@@ -214,13 +214,6 @@
 						$users.html(html);
 					});
 			});
-
-				
-				//$message.val('');
-				
-		
-
-
 			
 
 			$("button").click(function(e){

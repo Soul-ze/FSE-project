@@ -107,8 +107,9 @@ io.sockets.on('connection',function(socket){
 	  	});
 	});
 
-  socket.on('nuser', function(data1, data2, callback){
+  socket.on('login', function(data1, data2, callback){
   		console.log(usernames);
+  		socket.username = data1
   		let sql =`SELECT * FROM users WHERE username=` + data1 + ' AND password=' + data2 ;
   		console.log(sql);
 		connection.query(sql, (err, res) =>{
@@ -117,44 +118,14 @@ io.sockets.on('connection',function(socket){
 			if (res.length > 0 ){		
 				//if(usernames.indexOf(data1)==-1){
 					console.log('welcome!');
-					callback('login');
+					callback('ok');
+					usernames.push(data1);
+  					updateUsernames();
   					// history 					
   		}else{ 
   			console.log('refuse!')
   			callback('refuse');}
-  			/*
-  			socket.username = data1;
-  			socket.password = data2;
-  			console.log(socket.password);
-  			console.log(socket.username);
-
-            let newuser={username:socket.username, password:socket.password};
-			let sql='INSERT INTO users SET ?';
-			connection.query(sql,newuser,(err, result) =>{
-					if(err)throw err;
-					console.log(result);
-				//res.send('New User added.....');
-			});
-
-            //=====================================================
-             let signedUser = socket.username;
-             let sql1 = `SELECT * FROM users WHERE username = '${signedUser}'`;
-			 connection.query(sql1, (err, result) =>{
-			 	
-				if(err)throw err;
-					console.log('---------Checking signed user----------');
-					console.log(result);
-					console.log(result["username"]);
-
-		     	    //res.send('Username updated successfully.....');
-		     	   */
-		     	 
-	
-
-
-            //========================================================
-  			//usernames.push(socket.username);
-  			//updateUsernames();
+  			
   		}); //end connection
   	});
 
