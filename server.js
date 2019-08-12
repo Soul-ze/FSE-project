@@ -18,6 +18,7 @@ connection.connect((err)=>{
 	}
 	console.log('Mysql Connected....');
 });
+
 //=======create database==========================
 app.get('/createdb',(req,res)=>{
 	let sql='CREATE DATABASE node_db';
@@ -72,23 +73,56 @@ app.get('/getuser/:id',(req,res)=>{
 });
 
 //==========================================================================
-server.listen(process.env.PORT || 3000);
+server.listen(3000);
 console.log('Server Running..');
-
 app.get('/',function(req,res){
 	res.sendFile(__dirname + '/index.html');
 });
 
 io.sockets.on('connection',function(socket){
-  console.log('Socket Connected..');
+	console.log('Socket Connected..');
+
+	socket.on('newuser', function(data1, data2,callback){
+		console.log(data1);
+		console.log(data2); 
+		let sql =`SELECT * FROM users WHERE username=` + data1;
+  		console.log(sql); 
+		connection.query(sql, (err, res) =>{
+			console.log(res);
+			if(err)throw err;
+			if (res.length > 0 ){		
+				console.log('Already registered!');
+				callback('failed');				
+	  		}else{ 
+	  			console.log('Register successfully');
+	            let newuser={username:data1, password:data2};
+				let sql='INSERT INTO users SET ?';
+				connection.query(sql,newuser,(err, result) =>{
+						if(err)throw err;
+						console.log(result);
+					//res.send('New User added.....');
+				});
+				callback('ok');
+	  		}
+	  	});
+	});
 
   socket.on('nuser', function(data1, data2, callback){
-  		if(usernames.indexOf(data1)!=-1){
-
-  			callback(false);
-
-  		}else{
-  			callback(true);
+  		console.log(usernames);
+  		let sql =`SELECT * FROM users WHERE username=` + data1 + ' AND password=' + data2 ;
+  		console.log(sql);
+		connection.query(sql, (err, res) =>{
+			console.log(res);
+			if(err)throw err;
+			if (res.length > 0 ){		
+				//if(usernames.indexOf(data1)==-1){
+					console.log('welcome!');
+					callback('login');
+  					// history 					
+  		}else{ 
+  			console.log('refuse!')
+  			callback('refuse');}
+  			/*
   			socket.username = data1;
   			socket.password = data2;
   			console.log(socket.password);
@@ -113,15 +147,17 @@ io.sockets.on('connection',function(socket){
 					console.log(result["username"]);
 
 		     	    //res.send('Username updated successfully.....');
-	});
+		     	   */
+		     	 
+	
 
 
             //========================================================
-  			usernames.push(socket.username);
-  			updateUsernames();
-  		}
+  			//usernames.push(socket.username);
+  			//updateUsernames();
+  		}); //end connection
+  	});
 
-  });
 
 
 
