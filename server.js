@@ -38,6 +38,25 @@ app.get('/createusertable',(req,res)=>{
 		res.send('.......User Table Created.....');
 	});
 });
+
+//=======create row==========================
+app.get('/createMessagetable',(req,res)=>{
+	let sql='CREATE TABLE message(id int AUTO_INCREMENT, username VARCHAR(255), time VARCHAR(255), msg VARCHAR(255),PRIMARY KEY(id))';
+	connection.query(sql,(err, result) =>{
+		if(err)throw err;
+		console.log(result);
+		res.send('.......Message Table Created.....');
+	});
+});
+
+app.get('/dropMessagetable',(req,res)=>{
+	let sql='DROP TABLE message';
+	connection.query(sql,(err, result) =>{
+		if(err)throw err;
+		console.log(result);
+		res.send('.......Message Table Dropped.....');
+	});
+});
 //==================adding new user===================================
 app.get('/addingnewuser',(req,res)=>{
 	let newuser={username:'gilbert', password:'niyongere'};
@@ -49,6 +68,15 @@ app.get('/addingnewuser',(req,res)=>{
 	});
 });
 
+//=====================get message===========================================
+app.get('/getMessage',(req,res)=>{
+	let sql='SELECT * FROM message';
+	connection.query(sql, (err, results) =>{
+		if(err)throw err;
+		console.log(results);
+		res.send('Message Selected....');
+	});
+});
 
 //=====================get users===========================================
 app.get('/getusers',(req,res)=>{
@@ -137,8 +165,24 @@ io.sockets.on('connection',function(socket){
   	io.sockets.emit('usernames',usernames);
   }
 	//send message...
-  socket.on('smessage', function(data1){
-  		io.sockets.emit('nmessage', {msg: data1, user: socket.username});
+  socket.on('newMessage', function(content){
+  		var currentdate = new Date(); 
+   			var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        newmsg = {msg: content, username: socket.username, time:datetime};
+		let sql='INSERT INTO message SET ?';
+		console.log(sql)
+		connection.query(sql,newmsg,(err, result) =>{
+				if(err)throw err;
+				console.log(result);
+			//res.send('New User added.....');
+		});
+  		io.sockets.emit('showMessage', newmsg);
+  		
   });
 
 //===========disconnect =======

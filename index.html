@@ -157,13 +157,7 @@
 			var $error= $('#error');
 			var $registerError = $('#registerError');
 
-			var currentdate = new Date(); 
-   			var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+			
 
 
 			$usernameForm.submit(function(e){
@@ -226,13 +220,12 @@
 			
 			$messageForm.submit(function(e){
 			    e.preventDefault();
-				console.log("..........Submitted....");
-				socket.emit('smessage', $message.val());
+				socket.emit('newMessage', $message.val());
 				$message.val('');
 			});
 
-			socket.on('nmessage', function(data){
-				$chating.append('<div style="background:#F5F5F5"><strong>'+data.user+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+datetime+'<br><br><br>'+data.msg+'<hr/></div>');
+			socket.on('showMessage', function(data){
+				$chating.append('<div style="background:#F5F5F5"><strong>'+data.username+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+data.time+'<br><br><br>'+data.msg+'<hr/></div>');
 			});
 		});
     </script>
