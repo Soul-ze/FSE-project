@@ -2,21 +2,15 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width = device-width, initial-scale = 1">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width = device-width, initial-scale = 1">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
-	
 	<title>FSE Chat APP</title>
-
-    <script type="text/javascript">
-    	function setDateTime(){
-    		var datetime=new datetime();
-            
-    	}
-    </script>
 
 	</script>
 	<style>
@@ -138,8 +132,7 @@
 		 </div>
 	</div>
 
-	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+	
     <script>
 		$(function(){
 
@@ -173,7 +166,7 @@
 					}	
 				});
 
-				socket.on('usernames', function(data){
+				socket.on('updateUsers', function(data){
 
 					var html= '';
 					for(i = 0;i < data.length; i++){
@@ -199,14 +192,6 @@
 						$registerError.html('Register Failed, username has been taken.');
 					}
 				});
-
-					socket.on('usernames', function(data){
-						var html= '';
-						for(i = 0;i < data.length; i++){
-							html +=data[i] + '<br>';
-						}
-						$users.html(html);
-					});
 			});
 			
 
@@ -225,7 +210,7 @@
 			});
 
 			socket.on('showMessage', function(data){
-				$chating.append('<div style="background:#F5F5F5"><strong>'+data.username+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+data.time+'<br><br><br>'+data.msg+'<hr/></div>');
+				$chating.append('<div style="background:#F5F5F5"><strong>'+data.user+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+data.time+'<br><br><br>'+data.msg+'<hr/></div>');
 			});
 		});
     </script>

@@ -41,7 +41,7 @@ app.get('/createusertable',(req,res)=>{
 
 //=======create row==========================
 app.get('/createMessagetable',(req,res)=>{
-	let sql='CREATE TABLE message(id int AUTO_INCREMENT, username VARCHAR(255), time VARCHAR(255), msg VARCHAR(255),PRIMARY KEY(id))';
+	let sql='CREATE TABLE message(id int AUTO_INCREMENT, user VARCHAR(255), time VARCHAR(255), msg VARCHAR(255),PRIMARY KEY(id))';
 	connection.query(sql,(err, result) =>{
 		if(err)throw err;
 		console.log(result);
@@ -149,6 +149,7 @@ io.sockets.on('connection',function(socket){
 					callback('ok');
 					usernames.push(data1);
   					updateUsernames();
+ 					showHistory();
   					// history 					
   		}else{ 
   			console.log('refuse!')
@@ -162,27 +163,51 @@ io.sockets.on('connection',function(socket){
 
   //update username
   function updateUsernames(){
-  	io.sockets.emit('usernames',usernames);
+  	io.sockets.emit('updateUsers',usernames);
+  }
+
+  function showHistory(){
+  	let sql='SELECT * FROM message';
+	connection.query(sql, (err, results) =>{
+		if(err)throw err;
+		
+		console.log(results);
+		for(i = 0; i < results.length; i++){
+			io.sockets.emit('showMessage', results[i]);		
+		}
+
+	});
   }
 	//send message...
   socket.on('newMessage', function(content){
   		var currentdate = new Date(); 
-   			var datetime = currentdate.getDate() + "/"
+        var hour = currentdate.getHours();  
+        var minute = currentdate.getMinutes(); 
+        var second = currentdate.getSeconds();
+        if (hour<10) {
+            	hour='0'+hour;
+            }
+        if (minute<10) {
+        	minute='0'+minute;
+        }
+        if (second<10) {
+        	second='0'+second;
+        }
+        var datetime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
-        newmsg = {msg: content, username: socket.username, time:datetime};
+                + currentdate.getFullYear() + " " 
+                + hour + ":" 
+                + minute + ":" 
+                + second; 
+        newmsg = {msg: content, user: socket.username, time:datetime};
 		let sql='INSERT INTO message SET ?';
-		console.log(sql)
+		console.log(sql);
 		connection.query(sql,newmsg,(err, result) =>{
 				if(err)throw err;
 				console.log(result);
 			//res.send('New User added.....');
-		});
-  		io.sockets.emit('showMessage', newmsg);
-  		
+	  		io.sockets.emit('showMessage', newmsg);
+  		});
   });
 
 //===========disconnect =======
@@ -190,7 +215,9 @@ io.sockets.on('connection',function(socket){
   	if(!socket.username){
   		return;
   	}
-  	usernames.splice(usernames.indexOf(socket.username,1));
+  	console.log(socket.username);
+  	usernames.splice(usernames.indexOf(socket.username),1);
+  	console.log(usernames);
   	updateUsernames();
 
   });
