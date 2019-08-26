@@ -24,11 +24,22 @@
 		}
 		#chatWindow{
 			height: 300px;
-			padding-bottom: 100px;
-			overflow: auto;
-
+			
 
 		}
+		#oldMessage{
+			overflow: auto;
+			margin-top :20px;
+			height: 220px; 
+			border-radius: 10px;
+			border: 1px #ccc solid;
+			background:#F5F5F5;
+		}
+
+		#messageForm{
+			margin-top: 20px ;
+		}
+
 		#mainWrapper{
 		display: none;
 		}
@@ -36,6 +47,7 @@
 		#registerWrapper{
 		display: none;
 		}
+
 
 		#chatWrapper{
 			float: left;
@@ -46,6 +58,29 @@
 			border: 2px #ccc solid
 
 		}
+
+
+		.content-time {
+			text-align: center;
+			margin: 10px auto;
+		}
+		.content-time-span {
+			display: inline-block;
+			padding: 1px 10px;
+			background: #dcdcdc;
+			color: #fff;
+			border-radius: 2px;
+		}
+
+		
+		#registerError{
+			color: #F00;
+		}
+
+		#error{
+			color: #F00;
+		}
+
 		#userWrapper{
 			float: left;
 			border-radius: 10px;
@@ -67,7 +102,7 @@
 			
 		}
 		#message{
-
+			text-align: center;
 			background: #C6E7F8;
 		}
 		input{
@@ -79,8 +114,65 @@
 			background: #2AA0F1;
 		}
 		#heading{
+			
 			background: #48A6ED;
 		}
+
+
+		.name {
+			float: right;
+			width: 40px;
+			height: 40px;
+		}
+		.name-left {
+			float: left;
+			width: 40px;
+			height: 40px;
+		}
+
+		.text-style {
+			text-align: right;
+		}
+		.text-style-left {
+			text-align: left;
+		}
+		.pos, .pos-left {
+			margin: 0 10px;
+			display: inline-block;
+			position: relative;
+		}
+		.pos:after {
+		    content: "";
+		    position: absolute;
+		    top: 14px;
+		    left: 100%;
+		    border-top: 5px solid transparent;
+		    border-left: 6px solid #b2e281;
+		    border-bottom: 5px solid transparent;
+		}
+		.pos-left:before {
+			content: "";
+		    position: absolute;
+		    top: 14px;
+		    right: 100%;
+		    border-top: 5px solid transparent;
+		    border-right: 6px solid #b2e281;
+		    border-bottom: 5px solid transparent;
+		}
+		.bubble {
+			text-align: left;
+			max-width: 400px;
+			min-height: 40px;
+			display: inline-block;
+			vertical-align: top;
+			background: #b2e281;
+			border-radius: 3px;
+		}
+		.plain {
+			padding: 9px 13px;
+			font-size: 14px;
+		}
+
 	</style>
 </head>
 
@@ -118,9 +210,12 @@
 			 	</div>
 				<div id="chatWindow">
 					<div id="typemessage">
+						<div id='oldMessage'>
+						</div>
+
 						<form id="messageForm">
-								<input type="text" size="35" id="message" placeholder="Message...."></input><br>
-								<center><input type="submit" value="Post" id="postInput" ></input><center>
+							<input type="text" size="35" id="message" placeholder="Message...."></input><br>
+							<center><input type="submit" value="Post" id="postInput" ></input><center>
 						</form>
 					</div>			
 			 	</div>
@@ -149,6 +244,7 @@
 			var $password= $('#password');
 			var $error= $('#error');
 			var $registerError = $('#registerError');
+			var $oldMessage = $('#oldMessage');
 
 			
 
@@ -210,8 +306,23 @@
 			});
 
 			socket.on('showMessage', function(data){
+				/*
 				$chating.append('<div style="background:#F5F5F5"><strong>'+data.user+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+data.time+'<br><br><br>'+data.msg+'<hr/></div>');
+				*/
+				
+				var time = '<p class="content-time"><span class="content-time-span">'+data.time+'</span></p>';
+		 		
+				var user = $("<div class='name-left'></div>").text(data.user);
+				if user == socket.
+				var msg = '<div class="text-style-left"><div class="pos-left"><div class="bubble"><div class="plain">'+
+				data.msg+ '</div></div></div></div>';
+
+				$oldMessage.append(time,user,msg);
+				
+
+
 			});
+
 		});
     </script>
 
