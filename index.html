@@ -30,9 +30,10 @@
 			overflow: auto;
 			margin-top :20px;
 			height: 350px; 
-			border-radius: 10px;
+			border-radius: 5px;
 			border: 1px #ccc solid;
 			background:#F5F5F5;
+			padding-bottom: 20px;
 		}
 
 		#messageForm{
@@ -54,8 +55,8 @@
 			border-radius: 10px;
 			background:#ffffff;
 			padding:10px;		
-			border: 2px #ccc solid;
-			border-color: #FF6E28;
+			border: 1px #ccc solid;
+			border-color: black;
 
 		}
 
@@ -63,13 +64,7 @@
 		.content-time {
 			text-align: center;
 			margin: 20px 0px 0px 0px;
-		}
-		.content-time-span {
-			display: inline-block;
-			padding: 1px 10px;
-			background: #dcdcdc;
-			color: #fff;
-			border-radius: 2px;
+			opacity:0.7;
 		}
 
 		
@@ -92,13 +87,17 @@
 			width: 300px;
 	
 		}
-		input{
-			height: 30px;
+		#login{
+			height: 25px;
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+		#register{
+			height:25px;
 		}
 		
 		#heading{
 			text-align: center;
-			color:#FF6E28 ;
 		}
 
 		.name-left {
@@ -142,22 +141,28 @@
 		}
 		#messageBox{
 			margin-left: 10px;
-			margin-right: 10px;
-			border: 0px;
-			resize: none;
+		    margin-right: 10px;
+		    border: 0px;
+		    resize: none;
+		    width: 300px;
+		    overflow-wrap: break-word;
 		}
 
-		#postInput{
-			background: #FF6E28;
-			margin-top: 5px; 
-			text-align: center;
-			width:100px;
+		#postInput {
+		    background: #1890ff;
+		    color: white;
+		    margin-top: 5px;
+		    text-align: center;
+		    width: 100px;
+		    border-radius: 5px;
 		}
-		#logout{
-			background: #FF6E28;
-			margin-top: 5px; 
-			width: 80px;
-			border-radius: 25px;
+
+		#logout {
+		    background: transparent;
+		    margin-top: 5px;
+		    width: 80px;
+		    border: 0px;
+		    color: #1890ff;
 		}
 
 	</style>
@@ -172,8 +177,8 @@
 			<form id="usernameForm">
 				<input type="text" size="35" id="username" placeholder="Your username...."></input>
 				<input type="password" size="35" id="password" placeholder="Your password.."></input>
-				<input type="submit" value="Submit"></input>
-				<button type="button" id='register'>Register!</button>
+				<input type="submit" value="Login" id='login'></input>
+				<button type="button" id='register'>Register</button>
 			</form>
 		 </div>
 
@@ -305,10 +310,10 @@
 				for(i = 0; i < data.length; i++){
 				var time = '<p class="content-time"><span class="content-time-span">'+data[i].time+'</span></p>';
 		 		
-				var user = '<div class="name-left">'+"Username:"+data[i].user+'</div>';
+				var user = '<div class="name-left">'+data[i].user+'</div>';
 
-				var msg = '<div class="text-style-left"><div class="pos-left"><div class="bubble"><div class="plain"><textarea cols="40" rows="2" id="messageBox" disabled>'+
-				data[i].msg+ '</textarea></div></div></div></div>';
+				var msg = '<div class="text-style-left"><div class="pos-left"><div class="bubble"><div class="plain"><div id="messageBox">'+
+				data[i].msg+ '</div></div></div></div></div>';
 
 				$oldMessage.append(time,user,msg);
 				}
