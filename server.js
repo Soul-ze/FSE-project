@@ -80,7 +80,6 @@ app.get('/getMessage',(req,res)=>{
 
 //=====================get users===========================================
 app.get('/getusers',(req,res)=>{
-	
 	let sql='SELECT * FROM users';
 	connection.query(sql, (err, results) =>{
 		if(err)throw err;
@@ -91,7 +90,6 @@ app.get('/getusers',(req,res)=>{
 
 //===================================select single user=================================================
 app.get('/getuser/:id',(req,res)=>{
-	
 	let sql =`SELECT * FROM users WHERE id = ${req.params.id}`;
 	connection.query(sql, (err, result) =>{
 		if(err)throw err;
@@ -103,13 +101,15 @@ app.get('/getuser/:id',(req,res)=>{
 //==========================================================================
 server.listen(3000);
 console.log('Server Running..');
-app.get('/',function(req,res){
-	res.sendFile(__dirname + '/index.html');
+
+app.use(express.static(__dirname));
+app.get('/', function (req, res) {
+    res.sendfile('index.html');
 });
 
 io.sockets.on('connection',function(socket){
-	console.log('Socket Connected..');
 
+	console.log('Socket Connected..');
 	socket.on('newuser', function(data1, data2,callback){
 		console.log(data1);
 		console.log(data2); 
@@ -135,11 +135,11 @@ io.sockets.on('connection',function(socket){
 	  	});
 	});
 
-  socket.on('login', function(data1, data2, callback){
-  		console.log(usernames);
-  		socket.username = data1
-  		let sql =`SELECT * FROM users WHERE username=` + data1 + ' AND password=' + data2 ;
-  		console.log(sql);
+	socket.on('login', function(data1, data2, callback){
+		console.log(usernames);
+		socket.username = data1
+		let sql =`SELECT * FROM users WHERE username=` + data1 + ' AND password=' + data2 ;
+		console.log(sql);
 		connection.query(sql, (err, res) =>{
 			console.log(res);
 			if(err)throw err;
@@ -148,70 +148,45 @@ io.sockets.on('connection',function(socket){
 					console.log('welcome!');
 					callback('ok');
 					usernames.push(data1);
- 					showHistory();
-  					// history 					
-  		}else{ 
-  			console.log('refuse!')
-  			callback('refuse');}
-  			
-  		}); //end connection
-  	});
-
-
-
-
-  //update username
-  function updateUsernames(){
-  	io.sockets.emit('updateUsers',usernames);
-  }
-
-  function showHistory(){
-  	let sql='SELECT * FROM message';
-	connection.query(sql, (err, results) =>{
-		if(err)throw err;
-		io.sockets.emit('showMessage', results);		
+						showHistory();
+						// history 					
+			}else{ 
+				console.log('refuse!')
+				callback('refuse');}
+				
+			}); //end connection
 	});
-  }
+
 	//send message...
-  socket.on('newMessage', function(content){
-  		var currentdate = new Date(); 
-        var hour = currentdate.getHours();  
-        var minute = currentdate.getMinutes(); 
-        var second = currentdate.getSeconds();
-        if (hour<10) {
-            	hour='0'+hour;
-            }
-        if (minute<10) {
-        	minute='0'+minute;
-        }
-        if (second<10) {
-        	second='0'+second;
-        }
-        var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " " 
-                + hour + ":" 
-                + minute + ":" 
-                + second; 
-        newmsg = {msg: content, user: socket.username, time:datetime};
+	socket.on('newMessage', function(content){
+		var currentdate = new Date(); 
+	    var hour = currentdate.getHours();  
+	    var minute = currentdate.getMinutes(); 
+	    var second = currentdate.getSeconds();
+	    if (hour<10) {hour='0'+hour;}
+	    if (minute<10) {minute='0'+minute;}
+	    if (second<10) {second='0'+second;}
+	    var datetime = currentdate.getDate() + "/"
+	            + (currentdate.getMonth()+1)  + "/" 
+	            + currentdate.getFullYear() + " " 
+	            + hour + ":" 
+	            + minute + ":" 
+	            + second; 
+	    newmsg = {msg: content, user: socket.username, time:datetime};
 		let sql='INSERT INTO message SET ?';	
 		connection.query(sql,newmsg,(err, result) =>{
 				if(err)throw err;
 				console.log(result);
-  		});
-  		showHistory();
-  });
+		});
+		showHistory();
+	});
 
-//===========disconnect =======
-  socket.on('disconnect', function(data1){
-  	if(!socket.username){
-  		return;
+    function showHistory(){
+	  	let sql='SELECT * FROM message';
+		connection.query(sql, (err, results) =>{
+			if(err)throw err;
+			io.sockets.emit('showMessage', results);		
+		});
   	}
-  	console.log(socket.username);
-  	usernames.splice(usernames.indexOf(socket.username),1);
-  	console.log(usernames);
-  	updateUsernames();
-
-  });
 
 });

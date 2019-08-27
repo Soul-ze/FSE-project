@@ -4,168 +4,14 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width = device-width, initial-scale = 1">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="app.css"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-
+    <script src="controller.js"></script>
 	<title>FSE Chat APP</title>
-
-	</script>
-	<style>
-		body{
-			background: #f9f9f9;
-		}
-		#container{
-			width: 700px;
-			margin: 0 auto;
-		}
-
-		#chatWindow{
-			height: 550px;
-			overflow-y:hidden;
-		}
-		#oldMessage{
-			overflow: auto;
-			margin-top :20px;
-			height: 350px; 
-			border-radius: 5px;
-			border: 1px #ccc solid;
-			background:#F5F5F5;
-			padding-bottom: 20px;
-		}
-
-		#messageForm{
-			text-align: center;
-			margin: 10px 0px 10px 0px;
-		}
-
-		#mainWrapper{
-		display: none;
-		}
-
-		#registerWrapper{
-		display: none;
-		}
-
-
-		#chatWrapper{
-			float: left;
-			border-radius: 10px;
-			background:#ffffff;
-			padding:10px;		
-			border: 1px #ccc solid;
-			border-color: black;
-
-		}
-
-
-		.content-time {
-			text-align: center;
-			margin: 20px 0px 0px 0px;
-			opacity:0.7;
-		}
-
-		
-		#registerError{
-			color: #F00;
-		}
-
-		#error{
-			color: #F00;
-		}
-
-		
-	
-		#typingArea{
-			margin-top: 20px;
-			background:#dcdcdc ;
-			overflow: auto;
-			border-radius: 10px;
-			border: 1px #ccc solid;
-			width: 300px;
-	
-		}
-		#login{
-			height: 25px;
-			padding-left: 15px;
-			padding-right: 15px;
-		}
-		#register{
-			height:25px;
-		}
-		
-		#heading{
-			text-align: center;
-		}
-
-		.name-left {
-			margin-left: 10px;
-			float: left;
-		}
-
-		
-		.text-style-left {
-			text-align: left;
-
-		}
-
-		.pos .pos-left {
-			margin: 0 10px;
-			display: inline-block;
-			position: relative;
-		}
-
-		.pos-left:before {
-			content: "";
-		    position: absolute;
-		    top: 14px;
-		    right: 100%;
-		    border-top: 5px solid transparent;
-		    border-right: 6px solid #b2e281;
-		    border-bottom: 5px solid transparent;
-		}
-		.bubble {
-			margin-left: 10px;
-			margin-right:10px;
-			text-align: left;
-			display: inline-block;
-			vertical-align: top;
-			background: white;
-			border-radius: 10px;
-		}
-		.plain {
-			padding: 5px 5px;
-			font-size: 14px;
-		}
-		#messageBox{
-			margin-left: 10px;
-		    margin-right: 10px;
-		    border: 0px;
-		    resize: none;
-		    width: 300px;
-		    overflow-wrap: break-word;
-		}
-
-		#postInput {
-		    background: #1890ff;
-		    color: white;
-		    margin-top: 5px;
-		    text-align: center;
-		    width: 100px;
-		    border-radius: 5px;
-		}
-
-		#logout {
-		    background: transparent;
-		    margin-top: 5px;
-		    width: 80px;
-		    border: 0px;
-		    color: #1890ff;
-		}
-
-	</style>
 </head>
 
 <body>
@@ -178,7 +24,7 @@
 				<input type="text" size="35" id="username" placeholder="Your username...."></input>
 				<input type="password" size="35" id="password" placeholder="Your password.."></input>
 				<input type="submit" value="Login" id='login'></input>
-				<button type="button" id='register'>Register</button>
+				<input type="submit" value="Register" id='registerButton'></input>
 			</form>
 		 </div>
 
@@ -197,132 +43,26 @@
 
 		<div id="mainWrapper">		
 			<div id="chatWrapper">
+
 			 	<div id="heading">
 			 		<h3>FSE Chatting App</h3>
 			 	</div>
-				<div id="chatWindow">
-					<div id="typemessage">
-						<div id='oldMessage'>
-						</div>
 
+				<div id="chatWindow">
+					<div id="typeMessage">
+						<div id='oldMessage'> </div>
 						<form id="messageForm">
 							<textarea id="typingArea" placeholder="Message...."></textarea>
 							<center><input type="submit" value="Post" id="postInput" ></input></center>
 						</form>
-						<input type="submit" value="Logout" id="logout" ></input>
-
+						<input type="submit" value="Logout" id="logoutButton" ></input>
 					</div>			
 			 	</div>
+
 			 </div>
 		 </div>
+
 	</div>
 
-	
-    <script>
-		$(function(){
-
-			var socket=io.connect();
-			var $messageForm = $('#messageForm');
-			var $typingArea = $('#typingArea');
-			var $chating = $('#chatWindow');
-			var $usernameForm = $('#usernameForm');
-			var $registerForm = $('#registerForm');
-			var $users = $('#users');
-			var $registerName = $('#registerName');
-			var $registerPassword = $('#registerPassword');
-			var $username= $('#username');
-			var $password= $('#password');
-			var $error= $('#error');
-			var $registerError = $('#registerError');
-			var $oldMessage = $('#oldMessage');
-			var $logout = $('#logout');
-
-
-
-			$usernameForm.submit(function(e){
-			    e.preventDefault();
-		
-				socket.emit('login',  $username.val(), $password.val(), function(data){
-					if(data =='ok'){
-						$('#namesWrapper').hide();
-						$('#mainWrapper').show();
-
-					}else{
-						$error.html('Wrong username or password')
-					}	
-				});
-
-				socket.on('updateUsers', function(data){
-
-					var html= '';
-					for(i = 0;i < data.length; i++){
-						html +=data[i] + '<br>';
-					}
-					$users.html(html);
-				});
-				//$message.val('');
-			});
-
-			
-			$registerForm.submit(function(e){
-			    e.preventDefault();
-
-				socket.emit('newuser',  $registerName.val(), $registerPassword.val(), function(data){
-					console.log(data)
-					if(data =='ok'){
-						alert("Register Successfully!");
-						$('#registerWrapper').hide();
-						$('#namesWrapper').show();
-						$('#mainWrapper').hide();
-					}else{
-						$registerError.html('Register Failed, username has been taken.');
-					}
-				});
-			});
-			
-			$logout.click(function(e){
-				//start registering
-				alert('Already Logout');
-				$('#registerWrapper').hide();
-				$('#namesWrapper').show();
-				$('#mainWrapper').hide();
-			});
-
-			$("button").click(function(e){
-				//start registering
-				$('#registerWrapper').show();
-				$('#namesWrapper').hide();
-				$('#mainWrapper').hide();
-				
-			});
-			
-			$messageForm.submit(function(e){
-			    e.preventDefault();
-				socket.emit('newMessage', $typingArea.val());
-				$typingArea.val('');
-			});
-
-			socket.on('showMessage', function(data){
-				/*
-				$chating.append('<div style="background:#F5F5F5"><strong>'+data.user+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+data.time+'<br><br><br>'+data.msg+'<hr/></div>');
-				*/
-				$oldMessage.empty();
-				for(i = 0; i < data.length; i++){
-				var time = '<p class="content-time"><span class="content-time-span">'+data[i].time+'</span></p>';
-		 		
-				var user = '<div class="name-left">'+data[i].user+'</div>';
-
-				var msg = '<div class="text-style-left"><div class="pos-left"><div class="bubble"><div class="plain"><div id="messageBox">'+
-				data[i].msg+ '</div></div></div></div></div>';
-
-				$oldMessage.append(time,user,msg);
-				}
-				
-			});
-
-		});
-    </script>
-
 </body>
-
 </html>
