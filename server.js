@@ -148,7 +148,6 @@ io.sockets.on('connection',function(socket){
 					console.log('welcome!');
 					callback('ok');
 					usernames.push(data1);
-  					updateUsernames();
  					showHistory();
   					// history 					
   		}else{ 
@@ -170,12 +169,7 @@ io.sockets.on('connection',function(socket){
   	let sql='SELECT * FROM message';
 	connection.query(sql, (err, results) =>{
 		if(err)throw err;
-		
-		console.log(results);
-		for(i = 0; i < results.length; i++){
-			io.sockets.emit('showMessage', results[i]);		
-		}
-
+		io.sockets.emit('showMessage', results);		
 	});
   }
 	//send message...
@@ -200,14 +194,12 @@ io.sockets.on('connection',function(socket){
                 + minute + ":" 
                 + second; 
         newmsg = {msg: content, user: socket.username, time:datetime};
-		let sql='INSERT INTO message SET ?';
-		console.log(sql);
+		let sql='INSERT INTO message SET ?';	
 		connection.query(sql,newmsg,(err, result) =>{
 				if(err)throw err;
 				console.log(result);
-			//res.send('New User added.....');
-	  		io.sockets.emit('showMessage', newmsg);
   		});
+  		showHistory();
   });
 
 //===========disconnect =======

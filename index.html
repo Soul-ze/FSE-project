@@ -20,24 +20,24 @@
 		#container{
 			width: 700px;
 			margin: 0 auto;
-
 		}
-		#chatWindow{
-			height: 300px;
-			
 
+		#chatWindow{
+			height: 550px;
+			overflow-y:hidden;
 		}
 		#oldMessage{
 			overflow: auto;
 			margin-top :20px;
-			height: 220px; 
+			height: 350px; 
 			border-radius: 10px;
 			border: 1px #ccc solid;
 			background:#F5F5F5;
 		}
 
 		#messageForm{
-			margin-top: 20px ;
+			text-align: center;
+			margin: 10px 0px 10px 0px;
 		}
 
 		#mainWrapper{
@@ -53,16 +53,16 @@
 			float: left;
 			border-radius: 10px;
 			background:#ffffff;
-			padding:10px;
-			
-			border: 2px #ccc solid
+			padding:10px;		
+			border: 2px #ccc solid;
+			border-color: #FF6E28;
 
 		}
 
 
 		.content-time {
 			text-align: center;
-			margin: 10px auto;
+			margin: 20px 0px 0px 0px;
 		}
 		.content-time-span {
 			display: inline-block;
@@ -81,75 +81,43 @@
 			color: #F00;
 		}
 
-		#userWrapper{
-			float: left;
+		
+	
+		#typingArea{
+			margin-top: 20px;
+			background:#dcdcdc ;
+			overflow: auto;
 			border-radius: 10px;
-			background:#f4f4f4;
-			padding:10px;
-			margin-left: 20px;
-			width: 150px;
-			max-height: 200px;
-			background: #FF6E28;
-			color: #ffffff;
-			border: 1px #ccc solid
-		}
-		#namesWrapper{
-			float: left;
-			border-radius: 10px;
-			background:#f4f4f4;
-			padding:10px;
-			margin-left: 20px;
-			
-		}
-		#message{
-			text-align: center;
-			background: #C6E7F8;
+			border: 1px #ccc solid;
+			width: 300px;
+	
 		}
 		input{
 			height: 30px;
-
 		}
-		#postInput{
-
-			background: #2AA0F1;
-		}
+		
 		#heading{
-			
-			background: #48A6ED;
+			text-align: center;
+			color:#FF6E28 ;
 		}
 
-
-		.name {
-			float: right;
-			width: 40px;
-			height: 40px;
-		}
 		.name-left {
+			margin-left: 10px;
 			float: left;
-			width: 40px;
-			height: 40px;
 		}
 
-		.text-style {
-			text-align: right;
-		}
+		
 		.text-style-left {
 			text-align: left;
+
 		}
-		.pos, .pos-left {
+
+		.pos .pos-left {
 			margin: 0 10px;
 			display: inline-block;
 			position: relative;
 		}
-		.pos:after {
-		    content: "";
-		    position: absolute;
-		    top: 14px;
-		    left: 100%;
-		    border-top: 5px solid transparent;
-		    border-left: 6px solid #b2e281;
-		    border-bottom: 5px solid transparent;
-		}
+
 		.pos-left:before {
 			content: "";
 		    position: absolute;
@@ -160,17 +128,36 @@
 		    border-bottom: 5px solid transparent;
 		}
 		.bubble {
+			margin-left: 10px;
+			margin-right:10px;
 			text-align: left;
-			max-width: 400px;
-			min-height: 40px;
 			display: inline-block;
 			vertical-align: top;
-			background: #b2e281;
-			border-radius: 3px;
+			background: white;
+			border-radius: 10px;
 		}
 		.plain {
-			padding: 9px 13px;
+			padding: 5px 5px;
 			font-size: 14px;
+		}
+		#messageBox{
+			margin-left: 10px;
+			margin-right: 10px;
+			border: 0px;
+			resize: none;
+		}
+
+		#postInput{
+			background: #FF6E28;
+			margin-top: 5px; 
+			text-align: center;
+			width:100px;
+		}
+		#logout{
+			background: #FF6E28;
+			margin-top: 5px; 
+			width: 80px;
+			border-radius: 25px;
 		}
 
 	</style>
@@ -179,7 +166,7 @@
 <body>
 	<div id="container">
          <div id="namesWrapper">
-			<h2>FSE Chatting App</h2>
+			<h2>FSE Chatting App</h1>
 			<p>Login here to start chatting:</p>
 			<div id="error"></div>
 			<form id="usernameForm">
@@ -206,7 +193,7 @@
 		<div id="mainWrapper">		
 			<div id="chatWrapper">
 			 	<div id="heading">
-			 		<h2>FSE Chatting App</h2>
+			 		<h3>FSE Chatting App</h3>
 			 	</div>
 				<div id="chatWindow">
 					<div id="typemessage">
@@ -214,15 +201,13 @@
 						</div>
 
 						<form id="messageForm">
-							<input type="text" size="35" id="message" placeholder="Message...."></input><br>
-							<center><input type="submit" value="Post" id="postInput" ></input><center>
+							<textarea id="typingArea" placeholder="Message...."></textarea>
+							<center><input type="submit" value="Post" id="postInput" ></input></center>
 						</form>
+						<input type="submit" value="Logout" id="logout" ></input>
+
 					</div>			
 			 	</div>
-			 </div>
-			 <div id="userWrapper">
-			 	<div ><h4>Available Users:</h4><hr/></div>
-			 	<div id="users"></div>
 			 </div>
 		 </div>
 	</div>
@@ -233,7 +218,7 @@
 
 			var socket=io.connect();
 			var $messageForm = $('#messageForm');
-			var $message = $('#message');
+			var $typingArea = $('#typingArea');
 			var $chating = $('#chatWindow');
 			var $usernameForm = $('#usernameForm');
 			var $registerForm = $('#registerForm');
@@ -245,18 +230,18 @@
 			var $error= $('#error');
 			var $registerError = $('#registerError');
 			var $oldMessage = $('#oldMessage');
+			var $logout = $('#logout');
 
-			
 
 
 			$usernameForm.submit(function(e){
 			    e.preventDefault();
-				console.log("...username form....");
+		
 				socket.emit('login',  $username.val(), $password.val(), function(data){
-					console.log('debug2');
 					if(data =='ok'){
 						$('#namesWrapper').hide();
 						$('#mainWrapper').show();
+
 					}else{
 						$error.html('Wrong username or password')
 					}	
@@ -290,6 +275,13 @@
 				});
 			});
 			
+			$logout.click(function(e){
+				//start registering
+				alert('Already Logout');
+				$('#registerWrapper').hide();
+				$('#namesWrapper').show();
+				$('#mainWrapper').hide();
+			});
 
 			$("button").click(function(e){
 				//start registering
@@ -301,26 +293,26 @@
 			
 			$messageForm.submit(function(e){
 			    e.preventDefault();
-				socket.emit('newMessage', $message.val());
-				$message.val('');
+				socket.emit('newMessage', $typingArea.val());
+				$typingArea.val('');
 			});
 
 			socket.on('showMessage', function(data){
 				/*
 				$chating.append('<div style="background:#F5F5F5"><strong>'+data.user+'</strong>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp'+data.time+'<br><br><br>'+data.msg+'<hr/></div>');
 				*/
-				
-				var time = '<p class="content-time"><span class="content-time-span">'+data.time+'</span></p>';
+				$oldMessage.empty();
+				for(i = 0; i < data.length; i++){
+				var time = '<p class="content-time"><span class="content-time-span">'+data[i].time+'</span></p>';
 		 		
-				var user = $("<div class='name-left'></div>").text(data.user);
-				if user == socket.
-				var msg = '<div class="text-style-left"><div class="pos-left"><div class="bubble"><div class="plain">'+
-				data.msg+ '</div></div></div></div>';
+				var user = '<div class="name-left">'+"Username:"+data[i].user+'</div>';
+
+				var msg = '<div class="text-style-left"><div class="pos-left"><div class="bubble"><div class="plain"><textarea cols="40" rows="2" id="messageBox" disabled>'+
+				data[i].msg+ '</textarea></div></div></div></div>';
 
 				$oldMessage.append(time,user,msg);
+				}
 				
-
-
 			});
 
 		});
