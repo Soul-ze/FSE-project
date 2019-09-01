@@ -123,7 +123,7 @@ io.sockets.on('connection',function(socket){
 		console.log(typeof(data1));
 		console.log(data2); 
 
-		let sql =`SELECT * FROM users WHERE username is NULL OR username=`+data1;
+		let sql ="SELECT * FROM users WHERE username='"+data1+"'";
   		console.log(sql); 
 		connection.query(sql, (err, res) =>{
 			console.log(res);
