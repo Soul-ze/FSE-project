@@ -14,3 +14,6 @@
 
 ###Reference:
 * https://github.com/gniyonge/FSE-Chat-App
+
+###Video Link:
+* https://www.youtube.com/watch?v=lQdMTDBjVkc&feature=youtu.be
