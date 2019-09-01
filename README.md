@@ -2,8 +2,8 @@
 ---
 ###Dependencies:
 * Frontside: HTML (index.html), CSS (app.css), Javascript, Jquery (controller.js)
-* Endside: Nodejs, Express (server.js)
-* Other: Mysql, socket.io
+* Backside: Nodejs, Express (server.js)
+* Others: Mysql, socket.io
 
 ###Functions:
 * Register for the chat room with a new username (one that does not already exist) and password
