@@ -8,7 +8,7 @@ var mysql      = require('mysql');
 var connection = mysql.createConnection({
   		host     : 'localhost',
   		user     : 'root',
-  		password : 'tangtang258',
+  		password : 'fseproject',
   		database : 'node_db'
 });
 
@@ -36,6 +36,15 @@ app.get('/createusertable',(req,res)=>{
 		if(err)throw err;
 		console.log(result);
 		res.send('.......User Table Created.....');
+	});
+});
+
+app.get('/dropUsertable',(req,res)=>{
+	let sql='DROP TABLE users';
+	connection.query(sql,(err, result) =>{
+		if(err)throw err;
+		console.log(result);
+		res.send('.......Message Table Dropped.....');
 	});
 });
 
@@ -111,17 +120,14 @@ io.sockets.on('connection',function(socket){
 
 	console.log('Socket Connected..');
 	socket.on('newuser', function(data1, data2,callback){
-		console.log(data1);
+		console.log(typeof(data1));
 		console.log(data2); 
-		let sql =`SELECT * FROM users WHERE username=` + data1;
+
+		let sql =`SELECT * FROM users WHERE username is NULL OR username=`+data1;
   		console.log(sql); 
 		connection.query(sql, (err, res) =>{
 			console.log(res);
-			if(err)throw err;
-			if (res.length > 0 ){		
-				console.log('Already registered!');
-				callback('failed');				
-	  		}else{ 
+			if (res == null || res.length==0 ){	
 	  			console.log('Register successfully');
 	            let newuser={username:data1, password:data2};
 				let sql='INSERT INTO users SET ?';
@@ -129,8 +135,11 @@ io.sockets.on('connection',function(socket){
 						if(err)throw err;
 						console.log(result);
 					//res.send('New User added.....');
+				callback('ok');	
 				});
-				callback('ok');
+	  		}else{ 
+				console.log('Already registered!');
+				callback('failed');	
 	  		}
 	  	});
 	});
@@ -138,21 +147,21 @@ io.sockets.on('connection',function(socket){
 	socket.on('login', function(data1, data2, callback){
 		console.log(usernames);
 		socket.username = data1
-		let sql =`SELECT * FROM users WHERE username=` + data1 + ' AND password=' + data2 ;
+		let sql = "SELECT * FROM users WHERE username='" + data1 + "' AND password='" + data2 +"'" ;
 		console.log(sql);
 		connection.query(sql, (err, res) =>{
 			console.log(res);
-			if(err)throw err;
-			if (res.length > 0 ){		
+			if (res == null || res.length == 0 ){		
 				//if(usernames.indexOf(data1)==-1){
-					console.log('welcome!');
-					callback('ok');
-					usernames.push(data1);
-						showHistory();
+					console.log('refuse!');
+					callback('refuse');
+					
 						// history 					
 			}else{ 
-				console.log('refuse!')
-				callback('refuse');}
+				console.log('welcome!');
+				callback('ok');
+				usernames.push(data1);
+				showHistory();}
 				
 			}); //end connection
 	});

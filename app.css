@@ -4,8 +4,10 @@
 	padding-right: 15px;
 }
 
-#register{
+#registerButton{
 	height:25px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 #registerWrapper{
